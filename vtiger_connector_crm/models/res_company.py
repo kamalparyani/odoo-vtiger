@@ -50,7 +50,6 @@ class ResCompany(models.Model):
                         'priority': res.get('starred', ''),
                         'partner_id': res.get('contact_id') or False
                     }
-                    # contact_id = res.get('contact_id') # Used partner_id in place of contact_id because in v15 CRM there is no field named contact_id
                     if crm_vals.get('partner_id'):
                         partner = partner_obj.search([('vtiger_id', '=', crm_vals.get('partner_id'))], limit=1)
                         if partner:
