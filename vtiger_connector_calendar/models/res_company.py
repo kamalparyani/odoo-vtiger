@@ -23,8 +23,7 @@ class ResCompany(models.Model):
             # create session
             session_name = company.vtiger_login(access_key)
             if company.last_sync_date:
-                qry = ("""SELECT * FROM Events WHERE modifiedtime >= '%s';""" %((company.last_sync_date) - timedelta(minutes=1)))
-                # Subtracted 1 minute from the last sync date due to the time difference between Odoo and Vtiger servers.
+                qry = ("""SELECT * FROM Events WHERE modifiedtime >= '%s';""" %((company.last_sync_date)))
             else:
                 qry = """SELECT * FROM Events;"""
             values = {'operation': 'query',
