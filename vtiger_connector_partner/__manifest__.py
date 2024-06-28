@@ -8,7 +8,7 @@
     'author': 'Serpent Consulting Services Pvt. Ltd.',
     'maintainer': 'Serpent Consulting Services Pvt. Ltd.',
     'website': 'https://www.serpentcs.com',
-    'depends': ['contacts','vtiger_connector_base'],
+    'depends': ['account','contacts','vtiger_connector_base'],
     'data': ['views/res_company_view.xml',
              'views/res_partner_view.xml'],
     'installable': True,
