@@ -74,14 +74,10 @@ class ResCompany(models.Model):
                         date_stp = date_s + timedelta(days=1)
                         calendar_vals.update({
                             'start': str(date_s),
-                            'modification_date': res.get('modifiedtime'),
                             'allday': False})
                         if not calendar_vals.get('stop'):
                             calendar_vals.update(
-                                {'stop': str(date_stp),
-                                 'modification_date': res.get('modifiedtime'),
-                                 'schedular_modification_date': datetime.now(),
-                                 })
+                                {'stop': str(date_stp)})
                     calendar_event = calendar_obj.search(
                         [('vtiger_id', '=', res.get('id'))], limit=1
                     )
