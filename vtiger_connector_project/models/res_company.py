@@ -14,15 +14,15 @@ class ResCompany(models.Model):
         return self.sync_vtiger_project()
 
     def sync_vtiger_project(self):
+        project_obj = self.env['project.project']
+        partner_obj = self.env['res.partner']
         for company in self:
             # Synchronise Partner
             company.sync_vtiger_partner()
             access_key = company.get_vtiger_access_key()
             session_name = company.vtiger_login(access_key)
             if company.last_sync_date:
-                qry = ("""SELECT * FROM Project
-                            WHERE modifiedtime >= '%s';"""
-                       % (company.last_sync_date))
+                qry = ("""SELECT * FROM Project WHERE modifiedtime >= '%s';""" % (company.last_sync_date))
             else:
                 qry = """SELECT * FROM Project;"""
             values = {'operation': 'query',
@@ -34,8 +34,6 @@ class ResCompany(models.Model):
             response = urlopen(req)
             result = json.loads(response.read())
             if result.get('success'):
-                project_obj = self.env['project.project']
-                partner_obj = self.env['res.partner']
                 for res in result.get('result', []):
                     project_vals = {
                         'name': res.get('projectname'),
