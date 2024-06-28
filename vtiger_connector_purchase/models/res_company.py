@@ -84,8 +84,8 @@ class ResCompany(models.Model):
                             order_line_vals = {
                                 'name': order_line_dict.get('comment'),
                                 'product_id': product and product.id,
-                                'product_uom': product.uom_id.id or 0,
-                                'product_qty': float(quantity) if quantity is not None else 0.00, # TypeError: float() argument must be a string or a number, not 'NoneType'
+                                'product_uom': product.uom_id.id,
+                                'product_qty': float(quantity) if quantity is not None else 0.00, # float() argument must be a string or a number, not 'NoneType'
                                 'price_unit': float(price_unit) if price_unit is not None else 0.00,
                                 'price_subtotal': float(netprice) if netprice is not None else 0.00,
                                 'order_id': order_id.id,
