@@ -81,5 +81,5 @@ class ResCompany(models.Model):
 
     def sync_vtiger_service_products(self):
         for company in self:
-            self.sync_vtiger_products(company, vtiger_type=['Services'])
+            self.sync_vtiger_products(company, vtiger_type=['Products', 'Services'])
         return True
