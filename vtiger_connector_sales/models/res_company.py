@@ -60,7 +60,7 @@ class ResCompany(models.Model):
         if result.get('success'):
             self.update_existing_sale_order_and_quotes(result)
             for res in result.get('result', []):
-                if res.get('quotestage') == 'Created' or vtiger_type == 'SalesOrder':
+                if res.get('quotestage') == 'New' or vtiger_type == 'SalesOrder':
                     order_id = sale_order_obj.search([('vtiger_id', '=', res.get('id'))], limit=1)
                     so_order_vals = {}
                     if not order_id:
@@ -108,9 +108,9 @@ class ResCompany(models.Model):
                                 'name': order_line_dict.get('comment'),
                                 'product_id': product and product.id,
                                 'product_uom': product.uom_id.id or 0,
-                                'product_uom_qty': float(quantity) if quantity is not None else 0.00,
-                                'price_unit': float(price_unit) if price_unit is not None else 0.00,
-                                'price_subtotal': float(netprice) if netprice is not None else 0.00,
+                                'product_uom_qty': float(quantity or 0.00),
+                                'price_unit': float(price_unit or 0.00),
+                                'price_subtotal': float(netprice or 0.00),
                                 'order_id': order_id.id
                             }
                             if order_id:
