@@ -28,6 +28,7 @@ class ResCompany(models.Model):
         partner_obj = self.env['res.partner']
         lead_obj = self.env['crm.lead']
         product_obj = self.env['product.product']
+        user_obj = self.env['res.users']
         access_key = company.get_vtiger_access_key()
         session_name = company.vtiger_login(access_key)
 
@@ -71,6 +72,14 @@ class ResCompany(models.Model):
                             if partner:
                                 so_order_vals.update(
                                     {'partner_id': partner.id})
+                        else:
+                            vtiger_user = user_obj.search([('login', '=', 'vtigeruser@vtiger')])
+                            if not vtiger_user:
+                                vtiger_user = user_obj.create({
+                                    'name': 'VTiger-User',
+                                    'login': 'vtigeruser@vtiger',
+                                })
+                            so_order_vals.update({'partner_id': vtiger_user.partner_id.id})
                         date_o = res.get('createdtime')
                         if date_o:
                             so_order_vals.update({'date_order': date_o})
