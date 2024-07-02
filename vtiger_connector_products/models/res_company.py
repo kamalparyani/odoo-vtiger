@@ -39,7 +39,6 @@ class ResCompany(models.Model):
         }
 
     def sync_vtiger_products(self, company, vtiger_type):
-        # self.sync_vtiger_service_products() Merged service_product method's code into current method.
         access_key = company.get_vtiger_access_key()
         session_name = company.vtiger_login(access_key)
         qry_template = {'Products': """SELECT * FROM Products WHERE modifiedtime >= '{}';""",
@@ -62,7 +61,6 @@ class ResCompany(models.Model):
             req = Request('%s?%s' % (url, data))
             response = urlopen(req)
             result = json.loads(response.read())
-
             if result.get('success'):
                 product_templ_obj = self.env['product.template']
                 for res in result.get('result', []):
