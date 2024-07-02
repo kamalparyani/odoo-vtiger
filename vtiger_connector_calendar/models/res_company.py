@@ -42,8 +42,7 @@ class ResCompany(models.Model):
                     if res.get('recurringtype') != '--None--':
                         calendar_vals.update(
                             {'recurrency': bool(res.get('recurringtype', '')),
-                             'rrule_type':
-                                res.get('recurringtype', '').lower()})
+                             'rrule_type': res.get('recurringtype', '').lower()})
                     get_start_time = res.get('time_start')
                     get_start_date = res.get('date_start')
                     if get_start_date:
