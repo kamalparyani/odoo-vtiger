@@ -18,7 +18,6 @@ class ResCompany(models.Model):
         partner_obj = self.env['res.partner']
         for company in self:
             # Synchronise Partner
-            company.sync_vtiger_partner()
             access_key = company.get_vtiger_access_key()
             session_name = company.vtiger_login(access_key)
             if company.last_sync_date:
@@ -35,6 +34,10 @@ class ResCompany(models.Model):
             result = json.loads(response.read())
             if result.get('success'):
                 for res in result.get('result', []):
+                    if res.get('contactid'):
+                        partner_exist = partner_obj.search([('vtiger_id', '=', res.get('contactid'))],limit=1)
+                        if not partner_exist:
+                            company.sync_vtiger_partner()
                     project_vals = {
                         'name': res.get('projectname'),
                     }
