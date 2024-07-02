@@ -17,8 +17,6 @@ class ResCompany(models.Model):
         crm_obj = self.env['crm.lead']
         partner_obj = self.env['res.partner']
         for company in self:
-            # Synchronise Partner
-            company.sync_vtiger_partner()
             # Get the access key for connection
             access_key = company.get_vtiger_access_key()
             # create session
@@ -36,9 +34,12 @@ class ResCompany(models.Model):
             req = Request('%s?%s' % (url, data))
             response = urlopen(req)
             result = json.loads(response.read())
-
             if result.get('success'):
                 for res in result.get('result', []):
+                    if res.get('contact_id'):
+                        partner_exist = partner_obj.search([('vtiger_id', '=', res.get('contact_id'))], limit=1)
+                        if not partner_exist:
+                            company.sync_vtiger_partner()
                     crm_vals = {
                         'name': res.get('potentialname', ''),
                         'email_from': res.get('email'),
