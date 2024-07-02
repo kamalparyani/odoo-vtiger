@@ -40,10 +40,6 @@ class ResCompany(models.Model):
                           'Quotes': """SELECT * FROM Quotes;"""
                           }
 
-        if vtiger_type == 'SalesOrder':
-            company.sync_vtiger_partner()
-            company.sync_vtiger_products(company, vtiger_type=['Products', 'Services'])
-
         if company.last_sync_date:
             qry = qry_template[vtiger_type].format((company.last_sync_date))
         else:
@@ -61,6 +57,10 @@ class ResCompany(models.Model):
         if result.get('success'):
             self.update_existing_sale_order_and_quotes(result)
             for res in result.get('result', []):
+                if res.get('contact_id') and vtiger_type == 'SalesOrder':
+                    partner_exist = partner_obj.search([('vtiger_id', '=', res.get('contact_id'))], limit=1)
+                    if not partner_exist:
+                        company.sync_vtiger_partner()
                 if res.get('quotestage') == 'New' or vtiger_type == 'SalesOrder':
                     order_id = sale_order_obj.search([('vtiger_id', '=', res.get('id'))], limit=1)
                     so_order_vals = {}
@@ -104,12 +104,14 @@ class ResCompany(models.Model):
                                  'note': res.get('terms_conditions'),
                                  'state': 'draft', }),
                         order_id = sale_order_obj.create(so_order_vals)
-
                     netprice = res.get('hdnGrandTotal')
                     if res.get('lineItems'):
                         for order_line_dict in res.get('lineItems'):
-                            product = product_obj.search([('vtiger_id', '=', order_line_dict.get('productid'))],
-                                                         limit=1)
+                            if type(order_line_dict) != dict:
+                                order_line_dict = res.get('lineItems').get(order_line_dict)
+                            product = product_obj.search([('vtiger_id', '=', order_line_dict.get('productid'))],limit=1)
+                            if not product:
+                                company.sync_vtiger_products(company, vtiger_type=['Products', 'Services'])
                             price_unit = order_line_dict.get('listprice')
                             quantity = order_line_dict.get('quantity')
 
