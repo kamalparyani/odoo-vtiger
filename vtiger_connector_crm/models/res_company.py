@@ -36,10 +36,6 @@ class ResCompany(models.Model):
             result = json.loads(response.read())
             if result.get('success'):
                 for res in result.get('result', []):
-                    if res.get('contact_id'):
-                        partner_exist = partner_obj.search([('vtiger_id', '=', res.get('contact_id'))], limit=1)
-                        if not partner_exist:
-                            company.sync_vtiger_partner()
                     crm_vals = {
                         'name': res.get('potentialname', ''),
                         'email_from': res.get('email'),
@@ -49,13 +45,11 @@ class ResCompany(models.Model):
                         'description': res.get('description'),
                         'activity_summary': res.get('nextstep'),
                         'priority': res.get('starred', ''),
-                        'partner_id': res.get('contact_id') or False
                     }
-                    if crm_vals.get('partner_id'):
-                        partner = partner_obj.search([('vtiger_id', '=', crm_vals.get('partner_id'))], limit=1)
-                        if partner:
-                            crm_vals.update({'partner_id': partner.id})
-                    # Search for existing partner
+                    if res.get('contact_id'):
+                        partner_exist = partner_obj.search([('vtiger_id', '=', res.get('contact_id'))], limit=1)
+                        if partner_exist:
+                            crm_vals.update({'partner_id': partner_exist.id})
                     crm = crm_obj.search([('vtiger_id', '=', res.get('id'))], limit=1)
                     if crm:
                         crm.write(crm_vals)
