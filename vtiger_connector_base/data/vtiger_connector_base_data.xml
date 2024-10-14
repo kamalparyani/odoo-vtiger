@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8" ?>
-<odoo noupdate="0">
+<odoo>
     <record forcecreate="True" id="ir_cron_sync_vtiger" model="ir.cron">
         <field name="name">Sync VTiger</field>
         <field name="user_id" ref="base.user_root" />
