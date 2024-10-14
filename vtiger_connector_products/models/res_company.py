@@ -40,6 +40,7 @@ class ResCompany(models.Model):
         }
 
     def sync_vtiger_products(self, company, vtiger_type):
+        product_templ_obj = self.env["product.template"]
         access_key = company.get_vtiger_access_key()
         session_name = company.vtiger_login(access_key)
         qry_template = {
@@ -63,7 +64,6 @@ class ResCompany(models.Model):
             response = urlopen(req, timeout=20)
             result = json.loads(response.read())
             if result.get("success"):
-                product_templ_obj = self.env["product.template"]
                 for res in result.get("result", []):
                     if vtiger_product_type == "Services":
                         product_vals = self.service_product_vals(res)
