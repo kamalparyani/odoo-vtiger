@@ -93,7 +93,7 @@ class ResCompany(models.Model):
                 "account_id": accounts["income"].id,
             }
             if res.get("invoicestatus") == "Credit Invoice":
-                invoice_id.type = "out_refund"
+                invoice_id.move_type = "out_refund"
             if not invoice_id.state == "posted":
                 invoice_id.write({"invoice_line_ids": [(0, 0, invoice_line_vals)]})
             if res.get("invoicestatus") in ["Created", "Sent"]:
